@@ -1,62 +1,41 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 
-public class Scope
+namespace Sync.Core
 {
-    public string Fonte { get; set; }
-    public DateTime DataInicio { get; set; } = DateTime.Now;
-}
-
-public class SyncStatus
-{
-    public int RegistrosProcessados { get; set; }
-    public int RegistrosInseridos { get; set; }
-    public int RegistrosAtualizados { get; set; }
-    public List<string> Erros { get; } = new List<string>();
-    public bool Sucesso => Erros.Count == 0;
-}
-
-public class DataSet
-{
-    public List<object> Registros { get; set; } = new List<object>();
-}
-
-public abstract class SyncBase
-{
-    public SyncStatus Executar(Scope escopo)
+    public abstract class SyncBase
     {
-        var status = new SyncStatus();
+        public SyncStatus Sincronizar(Scope scope)
+        {
+            var dataSet = ExtrairDados(scope);
+            var resultado = ProcessarDados(dataSet);
+            return resultado;
+        }
 
-        // Fluxo fixo do Template Method
-        var dadosBrutos = ColetarBruto(escopo);
-        var dadosNormalizados = NormalizarReconciliar(dadosBrutos, status);
-        AplicarDiferencas(dadosNormalizados, status);
-        PosAplicacao(status);
-        var relatorio = GerarRelatorio(status);
-
-        Console.WriteLine(relatorio);
-        return status;
+        protected abstract DataSet ExtrairDados(Scope scope);
+        protected abstract SyncStatus ProcessarDados(DataSet dataSet);
     }
 
-    protected abstract DataSet ColetarBruto(Scope escopo);
-
-    protected virtual DataSet NormalizarReconciliar(DataSet dadosBrutos, SyncStatus status)
+    public class Scope
     {
-        Console.WriteLine("Normalizando e reconciliando dados...");
-        status.RegistrosProcessados = dadosBrutos.Registros.Count;
-        return dadosBrutos;
+        public DateTime DataInicio { get; set; }
+        public DateTime DataFim { get; set; }
+        public List<string> Filtros { get; set; } = new List<string>();
     }
 
-    protected virtual void AplicarDiferencas(DataSet dadosNormalizados, SyncStatus status)
+    public class DataSet
     {
-        Console.WriteLine("Aplicando diferenças no catálogo...");
-        status.RegistrosInseridos = dadosNormalizados.Registros.Count / 2;
-        status.RegistrosAtualizados = dadosNormalizados.Registros.Count / 2;
+        public List<object> Dados { get; set; } = new List<object>();
+        public int TotalRegistros => Dados.Count;
+        public string Tipo { get; set; } = "";
     }
 
-    protected virtual void PosAplicacao(SyncStatus status)
+    public class SyncStatus
     {
-        // Implementação padrão no-op
+        public bool Sucesso { get; set; }
+        public string Mensagem { get; set; } = "";
+        public int RegistrosProcessados { get; set; }
+        public int RegistrosComErro { get; set; }
+        public DateTime DataSincronizacao { get; set; } = DateTime.Now;
     }
-
-    protected abstract string GerarRelatorio(SyncStatus status);
 }

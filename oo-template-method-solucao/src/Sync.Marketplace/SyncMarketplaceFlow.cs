@@ -1,33 +1,29 @@
-using System;
+﻿using Sync.Core;
 
-public sealed class SyncMarketplaceFlow : SyncBase
+namespace Sync.Marketplace
 {
-    protected override DataSet ColetarBruto(Scope escopo)
+    public class SyncMarketplaceFlow : SyncBase
     {
-        Console.WriteLine($"Coletando dados brutos do Marketplace: {escopo.Fonte}");
-        return new DataSet
+        protected override DataSet ExtrairDados(Scope scope)
         {
-            Registros = new List<object>
-            {
-                new { SKU = "MP001", Title = "Product MP 1", Price = 50.00m },
-                new { SKU = "MP002", Title = "Product MP 2", Price = 75.00m },
-                new { SKU = "MP003", Title = "Product MP 3", Price = 120.00m }
-            }
-        };
-    }
+            Console.WriteLine($"Extraindo dados do Marketplace de {scope.DataInicio} até {scope.DataFim}");
+            return new DataSet 
+            { 
+                Tipo = "Marketplace",
+                Dados = new List<object> { "Pedido1", "Pedido2", "Pedido3", "Pedido4" }
+            };
+        }
 
-    protected override void PosAplicacao(SyncStatus status)
-    {
-        // Chamando implementação base primeiro
-        base.PosAplicacao(status);
-
-        // Adicionando envio de métricas para analytics
-        Console.WriteLine("Enviando métricas para sistema de monitoramento...");
-        Console.WriteLine($"Evento Analytics: SyncMarketplace - {status.RegistrosProcessados} registros");
-    }
-
-    protected override string GerarRelatorio(SyncStatus status)
-    {
-        return $"MARKETPLACE SYNC REPORT\nProcessed: {status.RegistrosProcessados}\nInserted: {status.RegistrosInseridos}\nUpdated: {status.RegistrosAtualizados}";
+        protected override SyncStatus ProcessarDados(DataSet dataSet)
+        {
+            Console.WriteLine($"Processando {dataSet.TotalRegistros} registros do Marketplace");
+            return new SyncStatus 
+            { 
+                Sucesso = true,
+                Mensagem = "Sincronização Marketplace concluída com sucesso",
+                RegistrosProcessados = dataSet.TotalRegistros,
+                RegistrosComErro = 0
+            };
+        }
     }
 }

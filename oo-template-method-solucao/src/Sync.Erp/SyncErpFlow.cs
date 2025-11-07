@@ -1,22 +1,29 @@
-using System;
+﻿using Sync.Core;
 
-public sealed class SyncErpFlow : SyncBase
+namespace Sync.Erp
 {
-    protected override DataSet ColetarBruto(Scope escopo)
+    public class SyncErpFlow : SyncBase
     {
-        Console.WriteLine($"Coletando dados brutos do ERP: {escopo.Fonte}");
-        return new DataSet
+        protected override DataSet ExtrairDados(Scope scope)
         {
-            Registros = new List<object>
-            {
-                new { Codigo = "ERP001", Nome = "Produto ERP 1", Preco = 100.00m },
-                new { Codigo = "ERP002", Nome = "Produto ERP 2", Preco = 200.00m }
-            }
-        };
-    }
+            Console.WriteLine($"Extraindo dados do ERP de {scope.DataInicio} até {scope.DataFim}");
+            return new DataSet 
+            { 
+                Tipo = "ERP",
+                Dados = new List<object> { "Produto1", "Produto2", "Produto3" }
+            };
+        }
 
-    protected override string GerarRelatorio(SyncStatus status)
-    {
-        return $"RELATÓRIO ERP\nProcessados: {status.RegistrosProcessados}\nInseridos: {status.RegistrosInseridos}\nAtualizados: {status.RegistrosAtualizados}";
+        protected override SyncStatus ProcessarDados(DataSet dataSet)
+        {
+            Console.WriteLine($"Processando {dataSet.TotalRegistros} registros do ERP");
+            return new SyncStatus 
+            { 
+                Sucesso = true,
+                Mensagem = "Sincronização ERP concluída com sucesso",
+                RegistrosProcessados = dataSet.TotalRegistros,
+                RegistrosComErro = 0
+            };
+        }
     }
 }
