@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 public sealed class BrPaymentFlow : PaymentFlow
 {
-    public BrPaymentFlow() : base(""BRL"", ""pt-BR"")
+    public BrPaymentFlow() : base("BRL", "pt-BR")
     {
     }
     
@@ -13,12 +13,12 @@ public sealed class BrPaymentFlow : PaymentFlow
         var icms = subtotal * 0.18m; // ICMS 18%
         var pisCofins = subtotal * 0.09m; // PIS/COFINS 9%
         
-        Console.WriteLine($""Impostos calculados (BR): ICMS {icms:F2}, PIS/COFINS {pisCofins:F2}"");
+        Console.WriteLine($"Impostos calculados (BR): ICMS {icms:F2}, PIS/COFINS {pisCofins:F2}");
         return icms + pisCofins;
     }
     
     protected override string FormatarRecibo(ResultadoProcessamento resultado)
     {
-        return $""RECIBO BRASILEIRO\nTotal: {Moeda} {resultado.Total:F2}\nLocalidade: {Localidade}\nCPF/CNPJ: [Documento Fiscal]"";
+        return $"RECIBO BRASILEIRO\nTotal: {Moeda} {resultado.Total:F2}\nLocalidade: {Localidade}\nCPF/CNPJ: [Documento Fiscal]";
     }
-}
+} 

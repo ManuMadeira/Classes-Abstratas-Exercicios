@@ -2,7 +2,7 @@
 
 public class Registro
 {
-    public string Dados { get; set; } = string.Empty;
+    public string Dados { get; set; }
 }
 
 public class Relatorio

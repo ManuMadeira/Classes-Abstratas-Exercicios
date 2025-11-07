@@ -1,36 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-public class Pedido
-{
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public decimal Subtotal { get; set; }
-    public string Tipo { get; set; } = ""Nacional"";
-    public List<ItemPedido> Itens { get; set; } = new List<ItemPedido>();
-}
-
-public class ItemPedido
-{
-    public string Produto { get; set; } = string.Empty;
-    public int Quantidade { get; set; }
-    public decimal Preco { get; set; }
-}
-
-public class ResultadoProcessamento
-{
-    public bool Sucesso { get; set; }
-    public decimal Total { get; set; }
-    public string Mensagem { get; set; } = string.Empty;
-    public List<string> Logs { get; } = new List<string>();
-}
 
 public abstract class PedidoProcessor
 {
     protected PedidoProcessor(string moeda)
     {
         if (string.IsNullOrEmpty(moeda))
-            throw new ArgumentException(""Moeda não pode ser vazia"", nameof(moeda));
+            throw new ArgumentException("Moeda não pode ser vazia", nameof(moeda));
             
         Moeda = moeda;
     }
@@ -60,14 +35,14 @@ public abstract class PedidoProcessor
     protected virtual void ValidarItens(Pedido pedido)
     {
         if (pedido.Itens == null || pedido.Itens.Count == 0)
-            throw new InvalidOperationException(""Pedido sem itens"");
+            throw new InvalidOperationException("Pedido sem itens");
             
-        Console.WriteLine(""Itens validados com sucesso"");
+        Console.WriteLine("Itens validados com sucesso");
     }
     
     protected virtual void ReservarEstoque(Pedido pedido)
     {
-        Console.WriteLine(""Estoque reservado"");
+        Console.WriteLine("Estoque reservado");
     }
     
     protected abstract decimal CalcularFrete(Pedido pedido);
@@ -80,7 +55,7 @@ public abstract class PedidoProcessor
     
     protected virtual void PersistirPedido(Pedido pedido)
     {
-        Console.WriteLine($""Pedido {pedido.Id} persistido"");
+        Console.WriteLine($"Pedido {pedido.Id} persistido");
     }
     
     protected virtual void AposReservaEstoque(Pedido pedido)

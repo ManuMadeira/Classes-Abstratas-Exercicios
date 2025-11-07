@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Linq;
 
 public abstract class PaymentFlow
 {
     protected PaymentFlow(string moeda, string localidade)
     {
         if (string.IsNullOrEmpty(moeda))
-            throw new ArgumentException(""Moeda não pode ser vazia"", nameof(moeda));
+            throw new ArgumentException("Moeda não pode ser vazia", nameof(moeda));
         if (string.IsNullOrEmpty(localidade))
-            throw new ArgumentException(""Localidade não pode ser vazia"", nameof(localidade));
+            throw new ArgumentException("Localidade não pode ser vazia", nameof(localidade));
             
         Moeda = moeda;
         Localidade = localidade;
@@ -42,7 +41,7 @@ public abstract class PaymentFlow
     {
         if (pedido == null)
             throw new ArgumentNullException(nameof(pedido));
-        Console.WriteLine(""Pedido validado"");
+        Console.WriteLine("Pedido validado");
     }
     
     protected virtual decimal CalcularSubtotal(Pedido pedido)
@@ -64,7 +63,7 @@ public abstract class PaymentFlow
     
     protected virtual void RegistrarPagamento(Pedido pedido, decimal total)
     {
-        Console.WriteLine($""Pagamento de {Moeda} {total:F2} registrado"");
+        Console.WriteLine($"Pagamento de {Moeda} {total:F2} registrado");
     }
     
     protected virtual void AposRegistrar(ResultadoProcessamento resultado)
