@@ -1,22 +1,19 @@
-public class Pedido
+public abstract class PedidoProcessor
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public decimal Subtotal { get; set; }
-    public string Tipo { get; set; } = "Nacional";
-    public List<ItemPedido> Itens { get; set; } = new List<ItemPedido>();
-}
-
-public class ItemPedido
-{
-    public string Produto { get; set; }
-    public int Quantidade { get; set; }
-    public decimal Preco { get; set; }
-}
-
-public class ResultadoProcessamento
-{
-    public bool Sucesso { get; set; }
-    public decimal Total { get; set; }
-    public string Mensagem { get; set; }
-    public List<string> Logs { get; } = new List<string>();
-}
+    public ResultadoProcessamento Processar(Pedido pedido)
+    {
+        ValidarItens(pedido);
+        ReservarEstoque(pedido);
+        var frete = CalcularFrete(pedido);
+        var total = CalcularTotal(pedido, frete);
+        PersistirPedido(pedido);
+        AposReservaEstoque(pedido);
+        var confirmacao = GerarConfirmacao(pedido);
+        
+        return new ResultadoProcessamento(confirmacao);
+    }
+    
+    protected abstract decimal CalcularFrete(Pedido pedido);
+    protected abstract string GerarConfirmacao(Pedido pedido);
+    protected virtual void AposReservaEstoque(Pedido pedido) { }
+} 
